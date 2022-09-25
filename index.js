@@ -52,48 +52,45 @@
   `;
     }
 
-
-
     app.innerHTML = html;
   }
 })();
 
-
- function get_info(id) {
-  
-  if(sessionStorage.getItem(id) == null){
-    
-    get_info_api(id); 
-  }else{
-  const info_json = sessionStorage.getItem(id);
-    const info =  JSON.parse(info_json)
-if(info.time.getMinutes() >= info.max_time){
-  if(info.time.getSeconds())
-}else {}
-
-
-    print_info(info, id);
-    cache(id, info)
+function get_info(id) {
+  if (sessionStorage.getItem(id) === null) {
+    get_info_api(id);
+    console.log(1);
+  } else {
+    const info_json = sessionStorage.getItem(id);
+    const info = JSON.parse(info_json);
+    let time_now = new Date().getTime();
     console.log(2);
 
+    if (time_now < info.time_is_up) {
+      print_info(info, id);
+      cache(id, info);
+      console.log(3);
+
+    } else {
+      get_info_api(id);
+      console.log(4);
+
     }
-
-
+  }
 }
 
-async function get_info_api(id){
-   
-    console.log(1);
-          try {
-  const response = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
-  const info = await response.json();
-  print_info(info, id);
-  cache(id, info)
-} catch (error) {
-  console.log(error);
+async function get_info_api(id) {
+  try {
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${id}`
+    );
+    const info = await response.json();
+    print_info(info, id);
+    cache(id, info);
+  } catch (error) {
+    console.log(error);
+  }
 }
-}
-
 
 function print_info(info, id) {
   let div_info = document.querySelector(`#${id}`);
@@ -106,18 +103,8 @@ function print_info(info, id) {
   div_info.innerHTML = html;
 }
 
-function cache(id, info){
-  info.time = new Date()
-  if(info.time.getMinutes() < 59 ){
-   info.minute_time = info.time.getMinutes() +2
-  }else if(info.time.getMinutes() = 59){
-   info.max_time = 1
-  }else{
-   info.max_time = 2
-  }
- info.seconds_time = info.time.getSeconds();
-
- 
-let info_json = JSON.stringify( info)
-sessionStorage.setItem(id, info_json)
+function cache(id, info) {
+  info.time_is_up = new Date().getTime() + 120000;
+  let info_json = JSON.stringify(info);
+  sessionStorage.setItem(id, info_json);
 }
