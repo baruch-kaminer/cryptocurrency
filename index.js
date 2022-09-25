@@ -16,7 +16,6 @@
   async function get_data() {
     try {
       const response = await fetch("https://api.coingecko.com/api/v3/coins");
-      // console.log(response);
       currencies = await response.json();
 
       print_currencies(currencies);
@@ -28,7 +27,6 @@
   function print_currencies(currencies) {
     let html = "";
     for (let i = 0; i < 50; i++) {
-      // console.log(crypto[i].symbol);
       html += `
   <div class="card" style="width: 18rem;">
   <div class="card-body">
@@ -41,10 +39,10 @@
     <p class="card-text">${currencies[i].name}   </p>
 
     <p>
-  <button  onclick="btn_info_this('${currencies[i].name}')" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${currencies[i].symbol}"  id=btn${currencies[i].name}> More Info</button>
+  <button  onclick="get_info('${currencies[i].id}')" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${currencies[i].symbol}"  id=btn${currencies[i].name}> More Info</button>
   </p>
   <div class="collapse" id="${currencies[i].symbol}">
-  <div class="card card-body" id="${currencies[i].name}">
+  <div class="card card-body" id="${currencies[i].id}">
   
   </div>
   </div>
@@ -58,53 +56,68 @@
 
     app.innerHTML = html;
   }
-
-  // if(info.length === 0){
-  //   get_info()
-  // }
-
-  // let a = document.querySelector('.btn_info')
-  // console.log(a);
-  // .addEventListener('click',   btn_info_this())
-  // {
-  //   btn_info_this(this)
-  //   console.log(this_info);
-
-  // })
 })();
 
-// let this_info = '';
-function btn_info_this(btn) {
-  console.log(btn);
-  let this_info = btn.toLowerCase().replace(" ", "-");
-  get_info(this_info, btn);
-  //  return this_info
-  // console.log(this_info);
-}
-// console.log(this_info);
 
-async function get_info(v, btn) {
-  try {
-    // let v = btn_info_this(btn)
-    console.log(v);
-    const response = await fetch(`https://api.coingecko.com/api/v3/coins/${v}`);
-    let info = await response.json();
-    print_info(info, btn);
-    console.log(info);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function print_info(info, btn) {
-  let div_info = document.querySelector(`#${btn}`);
-  let html = `
+ function get_info(id) {
   
-<img src=${info.image.small} alt=""  width="30px"/>
-<span> USD: ${info.tickers[2].last}</span>
-<span> EUR: ${info.tickers[10].last}</span>
-<span> USD: ${info.tickers[2].last}</span>
+  if(sessionStorage.getItem(id) == null){
+    
+    get_info_api(id); 
+  }else{
+  const info_json = sessionStorage.getItem(id);
+    const info =  JSON.parse(info_json)
+if(info.time.getMinutes() >= info.max_time){
+  if(info.time.getSeconds())
+}else {}
+
+
+    print_info(info, id);
+    cache(id, info)
+    console.log(2);
+
+    }
+
+
+}
+
+async function get_info_api(id){
+   
+    console.log(1);
+          try {
+  const response = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
+  const info = await response.json();
+  print_info(info, id);
+  cache(id, info)
+} catch (error) {
+  console.log(error);
+}
+}
+
+
+function print_info(info, id) {
+  let div_info = document.querySelector(`#${id}`);
+  let html = `
+<img src=${info.image.small} alt=""  width="30px"/><br>
+<span> USD: ${info.market_data.high_24h.usd}</span><br>
+<span> EUR: ${info.market_data.high_24h.eur}</span><br>
+<span> ILS: ${info.market_data.high_24h.ils}</span><br>
 `;
   div_info.innerHTML = html;
-  console.log(html);
+}
+
+function cache(id, info){
+  info.time = new Date()
+  if(info.time.getMinutes() < 59 ){
+   info.minute_time = info.time.getMinutes() +2
+  }else if(info.time.getMinutes() = 59){
+   info.max_time = 1
+  }else{
+   info.max_time = 2
+  }
+ info.seconds_time = info.time.getSeconds();
+
+ 
+let info_json = JSON.stringify( info)
+sessionStorage.setItem(id, info_json)
 }
