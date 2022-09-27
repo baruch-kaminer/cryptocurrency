@@ -1,3 +1,6 @@
+
+let arr_names = [];
+
 (() => {
   let app = document.querySelector("#app");
 
@@ -32,7 +35,7 @@
   <div class="card-body">
   
     <h5 class="card-title">${currencies[i].symbol}<label class="switch">
-    <input type="checkbox">
+    <input type="checkbox" id="add" onclick="add_to_list(this)">
     <span class="slider round"></span>
     </label></h5>
     
@@ -50,6 +53,7 @@
   </div>
   </div>
   `;
+  arr_names.push(currencies[i].name)
     }
 
     app.innerHTML = html;
@@ -59,23 +63,16 @@
 function get_info(id) {
   if (sessionStorage.getItem(id) === null) {
     get_info_api(id);
-    console.log(1);
   } else {
     const info_json = sessionStorage.getItem(id);
     const info = JSON.parse(info_json);
     let time_now = new Date().getTime();
-    console.log(2);
-
     if (time_now < info.time_is_up) {
       print_info(info, id);
       cache(id, info);
-      console.log(3);
-
     } else {
       get_info_api(id);
-      console.log(4);
-
-    }
+    };
   }
 }
 
@@ -108,3 +105,22 @@ function cache(id, info) {
   let info_json = JSON.stringify(info);
   sessionStorage.setItem(id, info_json);
 }
+
+
+function add_to_list(thiss){
+  if(thiss){
+    console.log(arr_names);
+  }else{
+    console.log(2);
+  }
+ 
+}
+
+
+$( function() {
+  let availableTags = arr_names;
+  $( "#tags" ).autocomplete({
+    source: availableTags
+  });
+} );
+
