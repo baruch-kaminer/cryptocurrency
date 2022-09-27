@@ -1,6 +1,5 @@
-
+let arr_coniss = [];
 let arr_names = [];
-
 (() => {
   let app = document.querySelector("#app");
 
@@ -20,10 +19,20 @@ let arr_names = [];
     try {
       const response = await fetch("https://api.coingecko.com/api/v3/coins");
       currencies = await response.json();
-
+      obj_p(currencies);
       print_currencies(currencies);
     } catch (error) {
       loader();
+    }
+  }
+
+  function obj_p(currencies) {
+    for (let i = 0; i < 50; i++) {
+      let obj = {};
+      obj.id = currencies[i].id;
+      obj.name = currencies[i].name;
+      obj.symbol = currencies[i].symbol;
+      arr_coniss.push(obj);
     }
   }
 
@@ -31,7 +40,7 @@ let arr_names = [];
     let html = "";
     for (let i = 0; i < 50; i++) {
       html += `
-  <div class="card" style="width: 18rem;">
+  <div id="${currencies[i].id}" class="card coins" style="width: 18rem;">
   <div class="card-body">
   
     <h5 class="card-title">${currencies[i].symbol}<label class="switch">
@@ -42,10 +51,10 @@ let arr_names = [];
     <p class="card-text">${currencies[i].name}   </p>
 
     <p>
-  <button  onclick="get_info('${currencies[i].id}')" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#${currencies[i].symbol}"  id=btn${currencies[i].name}> More Info</button>
+  <button  onclick="get_info('${currencies[i].id}')" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${currencies[i].symbol}"  id=btn${currencies[i].name}> More Info</button>
   </p>
-  <div class="collapse" id="${currencies[i].symbol}">
-  <div class="card card-body" id="${currencies[i].id}">
+  <div class="collapse" id="collapse_${currencies[i].symbol}">
+  <div class="card card-body" id="info${currencies[i].id}">
   
   </div>
   </div>
@@ -53,7 +62,7 @@ let arr_names = [];
   </div>
   </div>
   `;
-  arr_names.push(currencies[i].name)
+      arr_names.push(currencies[i].name);
     }
 
     app.innerHTML = html;
@@ -72,7 +81,7 @@ function get_info(id) {
       cache(id, info);
     } else {
       get_info_api(id);
-    };
+    }
   }
 }
 
@@ -90,7 +99,7 @@ async function get_info_api(id) {
 }
 
 function print_info(info, id) {
-  let div_info = document.querySelector(`#${id}`);
+  let div_info = document.querySelector(`#info${id}`);
   let html = `
 <img src=${info.image.small} alt=""  width="30px"/><br>
 <span> USD: ${info.market_data.high_24h.usd}</span><br>
@@ -106,21 +115,34 @@ function cache(id, info) {
   sessionStorage.setItem(id, info_json);
 }
 
-
-function add_to_list(thiss){
-  if(thiss){
+function add_to_list(thiss) {
+  if (thiss) {
     console.log(arr_names);
-  }else{
+  } else {
     console.log(2);
   }
- 
 }
 
-
-$( function() {
+$(function () {
   let availableTags = arr_names;
-  $( "#tags" ).autocomplete({
-    source: availableTags
+  $("#tags").autocomplete({
+    source: availableTags,
   });
-} );
 
+  $("#tags").on("keyup change input", function () {
+    let name = $("#tags").val();
+    // name = name.toLowerCase().replace(' ', '-');
+    // console.log(name);
+
+    if (name) {
+      $(".coins").hide();
+      arr_coniss.forEach(function (conis) {
+        if (conis.name === name) {
+          $(`#${conis.id}`).show();
+        }
+      });
+    } else {
+      $(".coins").show();
+    }
+  });
+});
