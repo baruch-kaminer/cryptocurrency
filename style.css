@@ -116,4 +116,21 @@ body{
   }
 
 
+  #pop_up{
+    width: 30%;
+    height: 50%;
+    position: fixed;
+    left: 38%;
+    top: 20%;
+    border: 1px solid black;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    
+    
+  }
+
+  .x{
+    cursor: pointer;
+  }
   

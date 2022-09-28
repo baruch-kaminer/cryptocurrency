@@ -1,9 +1,8 @@
-let arr_coniss = [];
+let app = document.querySelector("#app");
+let arr_currency = [];
 let arr_names = [];
 (() => {
-  let app = document.querySelector("#app");
-
-  // let info = []
+  
 
   loader();
 
@@ -20,7 +19,6 @@ let arr_names = [];
       const response = await fetch("https://api.coingecko.com/api/v3/coins");
       currencies = await response.json();
       obj_p(currencies);
-      print_currencies(currencies);
     } catch (error) {
       loader();
     }
@@ -32,29 +30,31 @@ let arr_names = [];
       obj.id = currencies[i].id;
       obj.name = currencies[i].name;
       obj.symbol = currencies[i].symbol;
-      arr_coniss.push(obj);
+      arr_currency.push(obj);
     }
+    // console.log(arr_currency);
+    print_currencies(arr_currency);
   }
 
-  function print_currencies(currencies) {
+  function print_currencies(arr_currency) {
     let html = "";
-    for (let i = 0; i < 50; i++) {
+    arr_currency.forEach((currency) => {
       html += `
-  <div id="${currencies[i].id}" class="card coins" style="width: 18rem;">
+  <div id="${currency.id}" class="card coins" style="width: 18rem;">
   <div class="card-body">
   
-    <h5 class="card-title">${currencies[i].symbol}<label class="switch">
-    <input type="checkbox" id="add" onclick="add_to_list(this)">
+    <h5 class="card-title">${currency.symbol}<label class="switch">
+    <input type="checkbox" id="check${currency.id}"  onclick="checkbox_add_list('${currency.id}')">
     <span class="slider round"></span>
     </label></h5>
     
-    <p class="card-text">${currencies[i].name}   </p>
+    <p class="card-text">${currency.name}   </p>
 
     <p>
-  <button  onclick="get_info('${currencies[i].id}')" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${currencies[i].symbol}"  id=btn${currencies[i].name}> More Info</button>
+  <button onclick="get_info('${currency.id}')"    class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${currency.symbol}"  id=btn${currency.name}> More Info</button>
   </p>
-  <div class="collapse" id="collapse_${currencies[i].symbol}">
-  <div class="card card-body" id="info${currencies[i].id}">
+  <div class="collapse" id="collapse_${currency.symbol}">
+  <div class="card card-body" id="info${currency.id}">
   
   </div>
   </div>
@@ -62,8 +62,8 @@ let arr_names = [];
   </div>
   </div>
   `;
-      arr_names.push(currencies[i].name);
-    }
+      arr_names.push(currency.name);
+    });
 
     app.innerHTML = html;
   }
@@ -91,6 +91,7 @@ async function get_info_api(id) {
       `https://api.coingecko.com/api/v3/coins/${id}`
     );
     const info = await response.json();
+
     print_info(info, id);
     cache(id, info);
   } catch (error) {
@@ -115,30 +116,23 @@ function cache(id, info) {
   sessionStorage.setItem(id, info_json);
 }
 
-function add_to_list(thiss) {
-  if (thiss) {
-    console.log(arr_names);
-  } else {
-    console.log(2);
-  }
-}
-
 $(function () {
   let availableTags = arr_names;
   $("#tags").autocomplete({
     source: availableTags,
   });
 
+  // $('#sub_success').on('submit', function(){
+  //   event.defaultPrevented();
+  // })
+
   $("#tags").on("keyup change input", function () {
     let name = $("#tags").val();
-    // name = name.toLowerCase().replace(' ', '-');
-    // console.log(name);
-
     if (name) {
       $(".coins").hide();
-      arr_coniss.forEach(function (conis) {
-        if (conis.name === name) {
-          $(`#${conis.id}`).show();
+      arr_currency.forEach(function (currency) {
+        if (currency.name === name) {
+          $(`#${currency.id}`).show();
         }
       });
     } else {
@@ -146,3 +140,64 @@ $(function () {
     }
   });
 });
+
+let arr_currency_of_reports = [];
+
+function checkbox_add_list(id) {
+  
+  let checkbox = document.querySelector(`#check${id}`);
+  if (checkbox.checked) {
+    if(arr_currency_of_reports.length === 5){
+      
+      let html = `
+      <div id="pop_up">
+        <p>מקסימום לבחירה 5 מטבעות</p>
+        <ul id="ul_pop">
+        <li>${arr_currency_of_reports[0].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[0].id)">&#10060;</span></li>
+        <li>${arr_currency_of_reports[1].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[1].id)">&#10060;</span></li>
+        <li>${arr_currency_of_reports[2].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[2].id)">&#10060;</span></li>
+        <li>${arr_currency_of_reports[3].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[3].id)">&#10060;</span></li>
+        <li>${arr_currency_of_reports[4].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[4].id)">&#10060;</span></li>
+        </ul>
+      </div>`
+      app.innerHTML += html;
+      arr_currency_of_reports.forEach(currency => checkbox = document.querySelector(`#check${currency.id}`).checked = true)
+    }else{
+      arr_currency.forEach((currency) => {
+      if (currency.id === id) {
+        arr_currency_of_reports.push(currency);
+      }
+    });console.log(arr_currency_of_reports);
+    }
+  } else {
+    for(let i = 0; i < arr_currency_of_reports.length; i++){
+      if(arr_currency_of_reports[i].id === id){
+        arr_currency_of_reports.splice(i, 1)
+      }
+      // let checkbox = document.querySelector(`#check${arr_currency_of_reports[i].id}`);
+      // checkbox.checked = true;
+    } 
+    $('#pop_up').hide();
+    // $( function (){
+         
+       
+    //   })
+  }
+}
+
+function deleting_currency_report(id){
+  
+console.log(id);
+  let checkbox = document.querySelector(`#check${id}`);
+  checkbox.checked = false;
+  checkbox_add_list(id);
+  // for(let i = 0; i < arr_currency_of_reports.length; i++){
+  //   if(arr_currency_of_reports[i].id === id){
+  //     arr_currency_of_reports.splice(i, 1)
+  //   }
+  // }
+//   $( function (){
+//     $('#pop_up').css('display', 'none')
+ 
+// })
+}
