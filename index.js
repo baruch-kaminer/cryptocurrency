@@ -2,8 +2,6 @@ let app = document.querySelector("#app");
 let arr_currency = [];
 let arr_names = [];
 (() => {
-  
-
   loader();
 
   function loader() {
@@ -122,10 +120,6 @@ $(function () {
     source: availableTags,
   });
 
-  // $('#sub_success').on('submit', function(){
-  //   event.defaultPrevented();
-  // })
-
   $("#tags").on("keyup change input", function () {
     let name = $("#tags").val();
     if (name) {
@@ -144,11 +138,9 @@ $(function () {
 let arr_currency_of_reports = [];
 
 function checkbox_add_list(id) {
-  
   let checkbox = document.querySelector(`#check${id}`);
   if (checkbox.checked) {
-    if(arr_currency_of_reports.length === 5){
-      
+    if (arr_currency_of_reports.length === 5) {
       let html = `
       <div id="pop_up">
         <p>מקסימום לבחירה 5 מטבעות</p>
@@ -159,45 +151,32 @@ function checkbox_add_list(id) {
         <li>${arr_currency_of_reports[3].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[3].id)">&#10060;</span></li>
         <li>${arr_currency_of_reports[4].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[4].id)">&#10060;</span></li>
         </ul>
-      </div>`
+      </div>`;
       app.innerHTML += html;
-      arr_currency_of_reports.forEach(currency => checkbox = document.querySelector(`#check${currency.id}`).checked = true)
-    }else{
+      arr_currency_of_reports.forEach(
+        (currency) =>
+          (checkbox = document.querySelector(`#check${currency.id}`).checked =
+            true)
+      );
+    } else {
       arr_currency.forEach((currency) => {
-      if (currency.id === id) {
-        arr_currency_of_reports.push(currency);
-      }
-    });console.log(arr_currency_of_reports);
+        if (currency.id === id) {
+          arr_currency_of_reports.push(currency);
+        }
+      });
     }
   } else {
-    for(let i = 0; i < arr_currency_of_reports.length; i++){
-      if(arr_currency_of_reports[i].id === id){
-        arr_currency_of_reports.splice(i, 1)
+    for (let i = 0; i < arr_currency_of_reports.length; i++) {
+      if (arr_currency_of_reports[i].id === id) {
+        arr_currency_of_reports.splice(i, 1);
       }
-      // let checkbox = document.querySelector(`#check${arr_currency_of_reports[i].id}`);
-      // checkbox.checked = true;
-    } 
-    $('#pop_up').hide();
-    // $( function (){
-         
-       
-    //   })
+    }
+    $("#pop_up").remove();
   }
 }
 
-function deleting_currency_report(id){
-  
-console.log(id);
+function deleting_currency_report(id) {
   let checkbox = document.querySelector(`#check${id}`);
   checkbox.checked = false;
   checkbox_add_list(id);
-  // for(let i = 0; i < arr_currency_of_reports.length; i++){
-  //   if(arr_currency_of_reports[i].id === id){
-  //     arr_currency_of_reports.splice(i, 1)
-  //   }
-  // }
-//   $( function (){
-//     $('#pop_up').css('display', 'none')
- 
-// })
 }
