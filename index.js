@@ -5,7 +5,7 @@ let arr_names = [];
   loader();
 
   function loader() {
-    app.innerHTML = `<span class="loader"></span>`;
+    app.innerHTML = `<span class="loader_home">Loading</span>`;
   }
 
   let currencies = [];
@@ -14,7 +14,7 @@ let arr_names = [];
 
   async function get_data() {
     try {
-      const response = await fetch("https://api.coingecko.com/api/v3/coins");
+      const response = await fetch("https://api.coingecko.com/api/v3/coins/");
       currencies = await response.json();
       obj_p(currencies);
     } catch (error) {
@@ -84,12 +84,12 @@ function get_info(id) {
 }
 
 async function get_info_api(id) {
+  let div_info = document.querySelector(`#info${id}`);
+  div_info.innerHTML = `<span class="loader"></span>`;
   try {
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/${id}`
-    );
+    const response = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
     const info = await response.json();
-
+console.log(info);
     print_info(info, id);
     cache(id, info);
   } catch (error) {
@@ -144,14 +144,11 @@ function checkbox_add_list(id) {
       let html = `
       <div id="pop_up">
         <p>מקסימום לבחירה 5 מטבעות</p>
-        <ul id="ul_pop">
-        <li>${arr_currency_of_reports[0].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[0].id)">&#10060;</span></li>
-        <li>${arr_currency_of_reports[1].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[1].id)">&#10060;</span></li>
-        <li>${arr_currency_of_reports[2].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[2].id)">&#10060;</span></li>
-        <li>${arr_currency_of_reports[3].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[3].id)">&#10060;</span></li>
-        <li>${arr_currency_of_reports[4].name}<span class="x" onclick="deleting_currency_report(arr_currency_of_reports[4].id)">&#10060;</span></li>
-        </ul>
-      </div>`;
+        <ul id="ul_pop">`;
+        arr_currency_of_reports.forEach(currency => {
+          html += `<li>${currency.name}<span class="x" onclick="deleting_currency_report('${currency.id}')">&#10060;</span></li>`
+        });
+            html += `</ul> </div>`;
       app.innerHTML += html;
       arr_currency_of_reports.forEach(
         (currency) =>
