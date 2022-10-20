@@ -1,6 +1,7 @@
 const app = document.querySelector("#app");
 const my_chart = document.querySelector("#chartContainer");
-
+const btn_home = document.querySelector('#btn_home'); 
+const btn_reports = document.querySelector('#btn_reports'); 
 const arr_coins = [];
 const coins_of_reports = [];
 // (() => {
@@ -36,7 +37,8 @@ function obj_coins(currencies) {
   print_currencies(arr_coins);
 };
 
-function print_currencies(arr_coins) {
+function print_currencies(arr_coins, i) {
+  (i) && active(btn_home); 
   let html = '<section id="home_coins">';
   arr_coins.forEach((coins) => {
     html += `
@@ -50,7 +52,7 @@ function print_currencies(arr_coins) {
     <p><button onclick="get_info('${coins.id}')"    
   class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${coins.id}" 
    id=btn${coins.name}> More Info</button> </p>
-  <div class="collapse" id="collapse_${coins.id}">
+  <div class="collapse " id="collapse_${coins.id}">
   <div class="card card-body concentration" id="info${coins.id}">
   </div> </div> </div> </div>
   `;
@@ -114,46 +116,16 @@ function cache(id, info) {
 };
 
 
-
 function search() {
   event.preventDefault();
-  display({ id:"btn_home" });
+  display(btn_home);
   const name_coins = $("#tags");
   const coins = $(".coins");
   if (name_coins.val()) {
     coins.hide();
-    coins_of_reports.forEach((coins) => coins.symbol === name_coins.val() && $(`#${coins.id}`).show());
+    coins_of_reports.forEach(coins => coins.symbol === name_coins.val() && $(`#${coins.id}`).show());
   }
   name_coins.val("");
-};
-
-
-
-function checkbox_add_list(id) {
-  let checkbox = document.querySelector(`#check${id}`);
-  if (checkbox.checked) {
-    if (coins_of_reports.length === 5) {
-      let html = `
-      <section class ="concentration">
-      <div id="pop_up">
-        <p>Maximum To Choose: 5</p>
-        <ul id="ul_pop" class="list-group">`;
-      coins_of_reports.forEach((coins) => {
-        html += `<li class="list-group-item" >
-          <input class="form-check-input me-1" type="checkbox" checked value="" id="inp_pop${coins.id}" onchange="deleting_coins_report('${coins.id}', '${id}')">
-          <label class="form-check-label pointer" for="inp_pop${coins.id}">${coins.name}</label>
-          </li>`;
-      });
-      html += `</ul> <button class="btn btn-primary" onclick="close_popup()">Close</button></div> </section>`;
-      app.innerHTML += html;
-      coins_of_reports.forEach((coins) => (checkbox = document.querySelector(`#check${coins.id}`).checked = true));
-    } else {
-      arr_coins.forEach((coins) => coins.id === id && coins_of_reports.push(coins));
-    }
-  } else {
-    coins_of_reports.forEach((coins, i) => coins.id === id && coins_of_reports.splice(i, 1));
-    close_popup();
-  }
 };
 
 document.querySelector('#tags').addEventListener('focus', () => {
@@ -167,6 +139,38 @@ document.querySelector('#tags').addEventListener('focus', () => {
   });
 });
 
+
+function checkbox_add_list(id) {
+  let checkbox = document.querySelector(`#check${id}`);
+  if (checkbox.checked) {
+    if (coins_of_reports.length === 5) {
+      console.log(display_popup());
+      app.innerHTML += display_popup(id);
+      coins_of_reports.forEach((coins) => (checkbox = document.querySelector(`#check${coins.id}`).checked = true));
+    } else {
+      arr_coins.forEach((coins) => coins.id === id && coins_of_reports.push(coins));
+    }
+  } else {
+    coins_of_reports.forEach((coins, i) => coins.id === id && coins_of_reports.splice(i, 1));
+    close_popup();
+  }
+};
+
+function display_popup(id){
+  let html = `
+  <section class ="concentration">
+  <div id="pop_up">
+    <p>Maximum To Choose: 5</p>
+    <ul id="ul_pop" class="list-group">`;
+  coins_of_reports.forEach((coins) => {
+    html += `<li class="list-group-item" >
+      <input class="form-check-input me-1" type="checkbox" checked value="" id="inp_pop${coins.id}" onchange="deleting_coins_report('${coins.id}', '${id}')">
+      <label class="form-check-label pointer" for="inp_pop${coins.id}">${coins.name}</label>
+      </li>`;
+  });
+  html += `</ul> <button class="btn btn-primary" onclick="close_popup()">Close</button></div> </section>`;
+  return html;
+};
 
 function close_popup() {
   $("#pop_up").remove();
@@ -186,18 +190,19 @@ function activate_reports() {
     get += `${coins.symbol},`;
     arr_names.push(coins.symbol);
   });
-
   if((!get)){
     alert('add currencies to the report!');
     return;
   }
+  active(btn_reports);
   get.slice(0, -1);
   document.body.style.backgroundImage = "none";
   chart_activation(get, arr_names);
-  console.log(arr_names);
 };
 
 function display_about() {
+  let b = document.querySelector('#btn_about'); 
+  active(b)
   return `
   <section id="about" class="concentration">
   <img src="./images/nft-_background.png" alt="logo" width="130">
@@ -212,11 +217,16 @@ function display_about() {
 };
 
 function display(e) {
-  e.id === "btn_home" ? print_currencies(arr_coins) : (app.innerHTML = display_about());
+  e.id === "btn_home" ? print_currencies(arr_coins, e) : (app.innerHTML = display_about());
   my_chart.style.display = "none";
-  app.style.display = "flex";
+  app.style.display = "block";
 };
+
+function active(e){
+  document.querySelectorAll('nav  a').forEach(e => e.classList.remove('active'));
+  e.classList.add('active');
+}
 
 document.querySelector('h1').addEventListener('click', () => location.reload() );
 document.querySelector('#btn_search').addEventListener('click', search);
-document.querySelector('#btn_reports').addEventListener('click', activate_reports);
+btn_reports.addEventListener('click', activate_reports);

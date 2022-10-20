@@ -9,8 +9,15 @@ html, body{
   padding: 0;
  }
 
- nav a:hover{
-  font-weight: bolder;
+ div>ul>li>a:hover{
+  font-weight: bold;
+ }
+
+ .active{
+  font-weight: bold;
+  background-color: gold;
+  border-radius: 5px;
+  display: inline-block;
  }
 
 #home_coins {
@@ -21,7 +28,7 @@ html, body{
     justify-content:space-evenly;
     font-family: 'Hind Madurai', sans-serif;
     font-weight: 700;
-       
+    align-items: baseline
 
 }
 #chartContainer{
@@ -69,8 +76,6 @@ margin-top: 10px;
   align-items: center;
 }
 
-
-
 .loader_home {
   font-size: 48px;
   display: inline-block;
@@ -81,7 +86,7 @@ margin-top: 10px;
   text-shadow: 0 0 2px black, 0 0 1px black, 0 0 1px black;
   letter-spacing: 2px;
   position: relative;
-  margin-top: 15%;
+  margin-top: 20%;
 }
 .loader_home::after {
   content: 'Loading';
@@ -95,7 +100,6 @@ margin-top: 10px;
   box-sizing: border-box;
   animation: animloader 3s linear infinite;
 }
-
 @keyframes animloader {
   0% {
     width: 0%;
@@ -143,7 +147,6 @@ margin-top: 10px;
     }
   }
         
-
   .switch {
     position: relative;
     display: inline-block;
@@ -169,7 +172,6 @@ margin-top: 10px;
     -webkit-transition: .4s;
     transition: .4s;
   }
-  
   .slider:before {
     position: absolute;
     content: "";
@@ -203,7 +205,6 @@ margin-top: 10px;
   .slider.round:before {
     border-radius: 50%;
   }
-
 
   #about {
     font-family: 'Neuton', serif;;
