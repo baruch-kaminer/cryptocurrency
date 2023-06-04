@@ -28,8 +28,7 @@ html, body{
     justify-content:space-evenly;
     font-family: 'Hind Madurai', sans-serif;
     font-weight: 700;
-    align-items: baseline
-
+    align-items: baseline;
 }
 #chartContainer{
   height: 300px;
@@ -39,6 +38,7 @@ html, body{
 
 .coins{
   margin-bottom: 100px;
+  box-shadow: 10px 5px 5px gray ;
 }
 
   
