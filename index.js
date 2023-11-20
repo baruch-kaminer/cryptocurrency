@@ -4,6 +4,7 @@ const btn_home = document.querySelector('#btn_home');
 const btn_reports = document.querySelector('#btn_reports'); 
 const arr_coins = [];
 const coins_of_reports = [];
+const url = "https://api.coingecko.com/api/v3/coins/";
 // (() => {
 my_chart.style.display = "none";
 display_loader();
@@ -18,7 +19,7 @@ get_data();
 
 async function get_data() {
   try {
-    const response = await fetch("https://api.coingecko.com/api/v3/coins/");
+    const response = await fetch(url);
     currencies = await response.json();
     obj_coins(currencies);
   } catch (error) {
@@ -89,7 +90,7 @@ async function get_info_api(id) {
   let div_info = document.querySelector(`#info${id}`);
   div_info.innerHTML = `<span class="loader"></span>`;
   try {
-    const response = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
+    const response = await fetch(url + id);
     const info = await response.json();
     print_info(info, id);
     cache(id, info);
@@ -123,14 +124,14 @@ function search() {
   const coins = $(".coins");
   if (name_coins.val()) {
     coins.hide();
-    coins_of_reports.forEach(coins => coins.symbol === name_coins.val() && $(`#${coins.id}`).show());
+    arr_coins.forEach(coins => coins.symbol === name_coins.val() && $(`#${coins.id}`).show());
   }
   name_coins.val("");
 };
 
 document.querySelector('#tags').addEventListener('focus', () => {
   let arr = [];
-  coins_of_reports.forEach(e => {
+  arr_coins.forEach(e => {
     arr.push(e.symbol);
   });
   let availableTags = arr;
