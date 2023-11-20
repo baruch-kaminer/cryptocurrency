@@ -25,6 +25,7 @@ html, body{
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    gap: 15px;
     justify-content:space-evenly;
     font-family: 'Hind Madurai', sans-serif;
     font-weight: 700;
