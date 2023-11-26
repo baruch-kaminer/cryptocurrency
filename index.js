@@ -15,7 +15,9 @@ function display_loader() {
 
 let currencies = [];
 
-get_data();
+setTimeout(() => {
+  get_data();
+}, 1500);
 
 async function get_data() {
   try {

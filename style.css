@@ -105,7 +105,7 @@ margin-top: 10px;
   height: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  animation: animloader 3s linear infinite;
+  animation: animloader 1.5s linear infinite;
 }
 @keyframes animloader {
   0% {
