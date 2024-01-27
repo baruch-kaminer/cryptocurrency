@@ -2,7 +2,7 @@
 
 ## An application to display digital currency prices with a chart showing the price movement live.
 
-### ### In this application I used the following technologies:
+### In this application I used the following technologies:
 - html
 - css
 - JavaScript
