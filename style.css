@@ -246,3 +246,58 @@ margin-top: 10px;
 #contact > a:hover{
     color: blue;
 }
+
+form{
+  position: relative;
+}
+
+.divLoaderSearch{
+
+  position: absolute;
+  top: 4%;
+  right: 30%;
+  z-index: 150;
+
+}
+
+
+  .loaderSearch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #86b7fe;
+    box-shadow: 32px 0 #86b7fe, -32px 0 #86b7fe;
+    position: relative;
+    animation: flash 0.5s ease-out infinite alternate;
+    position: absolute;
+    top: 35%;
+    right: 55%;
+  }
+  
+  @keyframes flash {
+    0% {
+      background-color: white;
+      box-shadow: 32px 0 white, -32px 0 #86b7fe;
+    }
+    50% {
+      background-color: #86b7fe;
+      box-shadow: 32px 0 white, -32px 0 white;
+    }
+    100% {
+      background-color: white;
+      box-shadow: 32px 0 #86b7fe, -32px 0 white;
+    }
+  }
+        
+
+
+
+
+
+
+
+
+
+
+
+

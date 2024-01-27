@@ -8,6 +8,7 @@ const urlPerID = "https://api.coingecko.com/api/v3/coins/";
 const url = "https://api.coingecko.com/api/v3/coins/list/";
 // (() => {
 my_chart.style.display = "none";
+$('.loaderSearch').hide();
 display_loader();
 
 function display_loader() {
@@ -148,12 +149,8 @@ function search() {
   name_coins.val("");
 };
 
-document.querySelector('#tags').addEventListener('focus', () => {
+document.querySelector('#tags').addEventListener('focus', async() => {
   let arr = [];
-  setTimeout(() => {
-    console.log(100);
-  }, 2000);
-  console.log(200);
   currencies.forEach(e => {
     arr.push(e.symbol);
   });
@@ -163,6 +160,12 @@ document.querySelector('#tags').addEventListener('focus', () => {
   });
 });
 
+$('#tags').on('input', function() {
+  $('.loaderSearch').show();
+  setTimeout(() => {
+    $('.loaderSearch').hide();
+  }, 2000);
+});
 
 function checkbox_add_list(id) {
   let checkbox = document.querySelector(`#check${id}`);
