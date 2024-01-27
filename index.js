@@ -162,9 +162,11 @@ document.querySelector('#tags').addEventListener('focus', async() => {
 
 $('#tags').on('input', function() {
   $('.loaderSearch').show();
-  setTimeout(() => {
-    $('.loaderSearch').hide();
-  }, 2000);
+  new Promise(() => {
+    setTimeout(() => {
+      $('.loaderSearch').hide();
+    }, 2000);
+  })
 });
 
 function checkbox_add_list(id) {
