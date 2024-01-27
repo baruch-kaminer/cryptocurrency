@@ -4,7 +4,8 @@ const btn_home = document.querySelector('#btn_home');
 const btn_reports = document.querySelector('#btn_reports'); 
 const arr_coins = [];
 const coins_of_reports = [];
-const url = "https://api.coingecko.com/api/v3/coins/";
+const urlPerID = "https://api.coingecko.com/api/v3/coins/";
+const url = "https://api.coingecko.com/api/v3/coins/list/";
 // (() => {
 my_chart.style.display = "none";
 display_loader();
@@ -44,21 +45,7 @@ function print_currencies(arr_coins, i) {
   (i) && active(btn_home); 
   let html = '<section id="home_coins">';
   arr_coins.forEach((coins) => {
-    html += `
-  <div id="${coins.id}" class="card coins" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title">${coins.symbol.toUpperCase()}<label class="switch">
-    <input type="checkbox" id="check${coins.id}"  onclick="checkbox_add_list('${coins.id}')">
-    <span class="slider round"></span>
-    </label></h5>
-    <p class="card-text">${coins.name}   </p>
-    <p><button onclick="get_info('${coins.id}')"    
-  class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${coins.id}" 
-   id=btn${coins.name}> More Info</button> </p>
-  <div class="collapse " id="collapse_${coins.id}">
-  <div class="card card-body concentration" id="info${coins.id}">
-  </div> </div> </div> </div>
-  `;
+    html += htmlCoins(coins)
   });
   html += '</section>'
   app.innerHTML = html;
@@ -71,6 +58,24 @@ function print_currencies(arr_coins, i) {
   }
 };
 // })();
+
+function htmlCoins(coins){
+return `
+<div id="${coins.id}" class="card coins" style="width: 18rem;">
+<div class="card-body">
+  <h5 class="card-title">${coins.symbol.toUpperCase()}<label class="switch">
+  <input type="checkbox" id="check${coins.id}"  onclick="checkbox_add_list('${coins.id}')">
+  <span class="slider round"></span>
+  </label></h5>
+  <p class="card-text">${coins.name}   </p>
+  <p><button onclick="get_info('${coins.id}')"    
+class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${coins.id}" 
+ id=btn${coins.name}> More Info</button> </p>
+<div class="collapse " id="collapse_${coins.id}">
+<div class="card card-body concentration" id="info${coins.id}">
+</div> </div> </div> </div>
+`
+}
 
 function get_info(id) {
   if (sessionStorage.getItem(id) === null) {
@@ -92,7 +97,7 @@ async function get_info_api(id) {
   let div_info = document.querySelector(`#info${id}`);
   div_info.innerHTML = `<span class="loader"></span>`;
   try {
-    const response = await fetch(url + id);
+    const response = await fetch(urlPerID + id);
     const info = await response.json();
     print_info(info, id);
     cache(id, info);
@@ -126,14 +131,30 @@ function search() {
   const coins = $(".coins");
   if (name_coins.val()) {
     coins.hide();
-    arr_coins.forEach(coins => coins.symbol === name_coins.val() && $(`#${coins.id}`).show());
+    let html = '<section id="home_coins">'
+    currencies.forEach(c => {
+      if(c.symbol === name_coins.val()){
+        let cFind =  arr_coins.find(i => i.id === c.id);
+        !cFind && arr_coins.push(c);
+        html += htmlCoins(c);
+        }
+      }
+    )
+    html += `</section>`
+      app.innerHTML = html
+      $("#tags").blur();
   }
+  
   name_coins.val("");
 };
 
 document.querySelector('#tags').addEventListener('focus', () => {
   let arr = [];
-  arr_coins.forEach(e => {
+  setTimeout(() => {
+    console.log(100);
+  }, 2000);
+  console.log(200);
+  currencies.forEach(e => {
     arr.push(e.symbol);
   });
   let availableTags = arr;
@@ -233,3 +254,6 @@ function active(e){
 document.querySelector('h1').addEventListener('click', () => location.reload() );
 document.querySelector('#btn_search').addEventListener('click', search);
 btn_reports.addEventListener('click', activate_reports);
+
+
+
