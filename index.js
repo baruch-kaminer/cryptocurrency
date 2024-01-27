@@ -169,7 +169,6 @@ $('#tags').on('input', function() {
   })
 });  
 
-
 function checkbox_add_list(id) {
   let checkbox = document.querySelector(`#check${id}`);
   if (checkbox.checked) {
