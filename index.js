@@ -171,7 +171,6 @@ function checkbox_add_list(id) {
   let checkbox = document.querySelector(`#check${id}`);
   if (checkbox.checked) {
     if (coins_of_reports.length === 5) {
-      console.log(display_popup());
       app.innerHTML += display_popup(id);
       coins_of_reports.forEach((coins) => (checkbox = document.querySelector(`#check${coins.id}`).checked = true));
     } else {
