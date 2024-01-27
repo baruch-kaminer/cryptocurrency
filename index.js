@@ -167,7 +167,8 @@ $('#tags').on('input', function() {
       $('.loaderSearch').hide();
     }, 2000);
   })
-});
+});  
+
 
 function checkbox_add_list(id) {
   let checkbox = document.querySelector(`#check${id}`);
