@@ -237,9 +237,9 @@ function display_about() {
     <span class="separator"></span>
     <p>In this application you will receive information about digital currencies, currency prices in dollars, euros and shekels.</p> <p> You can add coins to a data chart that displays live coin prices.</p>
     <span class="separator"></span>
-    <p>My name is Baruch Kaminer and i am a front-end developer, an expert in building websites and applications and i have extensive experience and knowledge in innovative technologies and many programming languages. i developed this site using html, css, javascript and jQury.</p>
+    <p>My name is Baruch and i am a front-end developer, an expert in building websites and applications and i have extensive experience and knowledge in innovative technologies and many programming languages. i developed this site using html, css, javascript and jQury.</p>
     <span class="separator"></span>
-    <p id="contact">Contact me by email: <a href="mailto:b60617@gmail.com">B60617@gmail.com</a> </p>
+    <p id="contact">Contact me by email: <a href="mailto:baruchkaminer@gmail.com">baruchkaminer@gmail.com</a> </p>
 </section>`;
 };
 
