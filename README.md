@@ -8,5 +8,6 @@
 - JavaScript
 - jQuery
 - bootstrap
+- canvasjs
 --- 
 [To open the software in the browser](https://baruch-kaminer.github.io/cryptocurrency/)
