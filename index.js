@@ -6,7 +6,7 @@ const arr_coins = [];
 const coins_of_reports = [];
 const urlPerID = "https://api.coingecko.com/api/v3/coins/";
 const url = "https://api.coingecko.com/api/v3/coins/list/";
-// (() => {
+
 my_chart.style.display = "none";
 $('.loaderSearch').hide();
 display_loader();
@@ -15,67 +15,100 @@ function display_loader() {
   app.innerHTML = `<div class="concentration"><span class="loader_home">Loading</span></div>`;
 };
 
+function hide_loader() {
+  const loader = document.querySelector(".loader_home");
+  if (loader) {
+    loader.parentElement.remove();
+  }
+}
+
 let currencies = [];
 
 setTimeout(() => {
   get_data();
-}, 1500);
+}, 1000);
 
 async function get_data() {
   try {
     const response = await fetch(url);
     currencies = await response.json();
     obj_coins(currencies);
+    hide_loader();
   } catch (error) {
     display_loader();
   }
 };
 
 function obj_coins(currencies) {
-  for (let i = 0; i < 50; i++) {
+   currencies.forEach(currency => {
     let obj = {};
-    obj.id = currencies[i].id;
-    obj.name = currencies[i].name;
-    obj.symbol = currencies[i].symbol;
+    obj.id = currency.id;
+    obj.name = currency.name;
+    obj.symbol = currency.symbol;
     arr_coins.push(obj);
-  }
+  });
   print_currencies(arr_coins);
 };
 
+let startIndex = 0;
+
 function print_currencies(arr_coins, i) {
   (i) && active(btn_home); 
+  if (startIndex >= arr_coins.length) {
+    return;
+  }
+
+  if (startIndex === 0) {
+    app.innerHTML = ''; 
+  }
+
+  let endIndex = startIndex + 50;
+  if (endIndex > arr_coins.length) { 
+    endIndex = arr_coins.length;
+  }
+
   let html = '<section id="home_coins">';
-  arr_coins.forEach((coins) => {
-    html += htmlCoins(coins)
-  });
-  html += '</section>'
-  app.innerHTML = html;
-  
-  for(let i = 0; i < coins_of_reports.length; i++){
+  for (let i = startIndex; i < endIndex; i++) {
+    html += htmlCoins(arr_coins[i]);
+  }
+  html += '</section>';
+
+  app.innerHTML += html;
+
+  for (let i = 0; i < coins_of_reports.length; i++) {
     arr_coins.forEach(coins => {
       let checkbox = document.querySelector(`#check${coins.id}`);
-     coins.id === coins_of_reports[i].id && (checkbox.checked = true );
-  });
+      coins.id === coins_of_reports[i].id && (checkbox.checked = true);
+    });
   }
 };
-// })();
+
+window.addEventListener('scroll', () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+
+    if (startIndex < arr_coins.length) {
+      startIndex += 50;
+      print_currencies(arr_coins, 0, );
+    } 
+  }
+});
 
 function htmlCoins(coins){
-return `
-<div id="${coins.id}" class="card coins" style="width: 18rem;">
-<div class="card-body">
-  <h5 class="card-title">${coins.symbol.toUpperCase()}<label class="switch">
-  <input type="checkbox" id="check${coins.id}"  onclick="checkbox_add_list('${coins.id}')">
-  <span class="slider round"></span>
-  </label></h5>
-  <p class="card-text">${coins.name}   </p>
-  <p><button onclick="get_info('${coins.id}')"    
-class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${coins.id}" 
- id=btn${coins.name}> More Info</button> </p>
-<div class="collapse " id="collapse_${coins.id}">
-<div class="card card-body concentration" id="info${coins.id}">
-</div> </div> </div> </div>
-`
+  return `
+  <div id="${coins.id}" class="card coins" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">${coins.symbol.toUpperCase()}<label class="switch">
+      <input type="checkbox" id="check${coins.id}"  onclick="checkbox_add_list('${coins.id}')">
+      <span class="slider round"></span>
+      </label></h5>
+      <p class="card-text">${coins.name}</p>
+      <p><button onclick="get_info('${coins.id}')"    
+  class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${coins.id}" 
+   id=btn${coins.name}> More Info</button> </p>
+  <div class="collapse " id="collapse_${coins.id}">
+  <div class="card card-body concentration" id="info${coins.id}">
+  </div> </div> </div> </div>
+  `
 }
 
 function get_info(id) {
@@ -110,11 +143,11 @@ async function get_info_api(id) {
 function print_info(info, id) {
   let div_info = document.querySelector(`#info${id}`);
   let html = `
-<img src=${info.image.small} alt=""  width="30px"/><br/>
-<span> USD: ${info.market_data.high_24h.usd}&#36;</span>
-<span> EUR: ${info.market_data.high_24h.eur}&#8364;</span>
-<span> ILS: ${info.market_data.high_24h.ils}&#8362;</span>
-`;
+  <img src=${info.image.small} alt="" width="30px"/><br/>
+  <span> USD: ${info.market_data.high_24h.usd}&#36;</span>
+  <span> EUR: ${info.market_data.high_24h.eur}&#8364;</span>
+  <span> ILS: ${info.market_data.high_24h.ils}&#8362;</span>
+  `;
   div_info.innerHTML = html;
 };
 
@@ -124,7 +157,6 @@ function cache(id, info) {
   sessionStorage.setItem(id, info_json);
 };
 
-
 function search() {
   event.preventDefault();
   display(btn_home);
@@ -132,18 +164,17 @@ function search() {
   const coins = $(".coins");
   if (name_coins.val()) {
     coins.hide();
-    let html = '<section id="home_coins">'
+    let html = '<section id="home_coins">';
     currencies.forEach(c => {
-      if(c.symbol === name_coins.val()){
-        let cFind =  arr_coins.find(i => i.id === c.id);
+      if (c.symbol === name_coins.val()) {
+        let cFind = arr_coins.find(i => i.id === c.id);
         !cFind && arr_coins.push(c);
         html += htmlCoins(c);
-        }
       }
-    )
-    html += `</section>`
-      app.innerHTML = html
-      $("#tags").blur();
+    });
+    html += `</section>`;
+    app.innerHTML = html;
+    $("#tags").blur();
   }
   
   name_coins.val("");
@@ -166,7 +197,7 @@ $('#tags').on('input', function() {
     setTimeout(() => {
       $('.loaderSearch').hide();
     }, 2000);
-  })
+  });
 });  
 
 function checkbox_add_list(id) {
@@ -186,12 +217,12 @@ function checkbox_add_list(id) {
 
 function display_popup(id){
   let html = `
-  <section class ="concentration">
+  <section class="concentration">
   <div id="pop_up">
     <p>Maximum To Choose: 5</p>
     <ul id="ul_pop" class="list-group">`;
   coins_of_reports.forEach((coins) => {
-    html += `<li class="list-group-item" >
+    html += `<li class="list-group-item">
       <input class="form-check-input me-1" type="checkbox" checked value="" id="inp_pop${coins.id}" onchange="deleting_coins_report('${coins.id}', '${id}')">
       <label class="form-check-label pointer" for="inp_pop${coins.id}">${coins.name}</label>
       </li>`;
@@ -208,7 +239,7 @@ function deleting_coins_report(id, elm) {
   document.querySelector(`#check${id}`).checked = false;
   document.querySelector(`#check${elm}`).checked = true;
   checkbox_add_list(id);
-  checkbox_add_list(elm)
+  checkbox_add_list(elm);
 };
 
 function activate_reports() {
@@ -230,18 +261,19 @@ function activate_reports() {
 
 function display_about() {
   let b = document.querySelector('#btn_about'); 
-  active(b)
+  active(b);
   return `
   <section id="about" class="concentration">
   <img src="./images/nft-_background.png" alt="logo" width="130">
-    <h2 > CRYPTONITE</h2>
+    <h2>CRYPTONITE</h2>
     <span class="separator"></span>
-    <p>In this application you will receive information about digital currencies, currency prices in dollars, euros and shekels.</p> <p> You can add coins to a data chart that displays live coin prices.</p>
+    <p>In this application you will receive information about digital currencies, currency prices in dollars, euros and shekels.</p> 
+    <p>You can add coins to a data chart that displays live coin prices.</p>
     <span class="separator"></span>
-    <p>My name is Baruch Kaminer and i am a front-end developer, an expert in building websites and applications and i have extensive experience and knowledge in innovative technologies and many programming languages. i developed this site using html, css, javascript and jQury.</p>
+    <p>My name is Baruch Kaminer and I am a front-end developer, an expert in building websites and applications and I have extensive experience and knowledge in innovative technologies and many programming languages. I developed this site using HTML, CSS, JavaScript and jQuery.</p>
     <span class="separator"></span>
-    <p id="contact">Contact me by email: <a href="mailto:b60617@gmail.com">B60617@gmail.com</a> </p>
-</section>`;
+    <p id="contact">Contact me by email: <a href="mailto:b60617@gmail.com">B60617@gmail.com</a></p>
+  </section>`;
 };
 
 function display(e) {
@@ -251,11 +283,11 @@ function display(e) {
 };
 
 function active(e){
-  document.querySelectorAll('nav  a').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(e => e.classList.remove('active'));
   e.classList.add('active');
 }
 
-document.querySelector('h1').addEventListener('click', () => location.reload() );
+document.querySelector('h1').addEventListener('click', () => location.reload());
 document.querySelector('#btn_search').addEventListener('click', search);
 btn_reports.addEventListener('click', activate_reports);
 

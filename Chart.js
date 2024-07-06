@@ -1,9 +1,8 @@
 function chart_activation(get, _nams) {
- 
-  $('#chartContainer').hide();
-  const nams = _nams.map((n) => n.toUpperCase());
+  $("#chartContainer").hide();
+  const nams = _nams.map(n => n.toUpperCase());
   const arr_data = [];
-  
+
   const dataPoints1 = [];
   const dataPoints2 = [];
   const dataPoints3 = [];
@@ -15,7 +14,7 @@ function chart_activation(get, _nams) {
     dataPoints2,
     dataPoints3,
     dataPoints4,
-    dataPoints5
+    dataPoints5,
   ];
 
   const options = {
@@ -42,17 +41,16 @@ function chart_activation(get, _nams) {
   };
 
   arr_dataPoints.forEach((e, i) => {
-  options.data.push({
-    type: "line",
-    xValueType: "dateTime",
-    yValueFormatString: "###.00$",
-    showInLegend: true,
-    name: nams[i],
-    dataPoints: e,
-  })
-});
-options.data[0].xValueFormatString  = "hh:mm:ss TT";
-  
+    options.data.push({
+      type: "line",
+      xValueType: "dateTime",
+      yValueFormatString: "###.00$",
+      showInLegend: true,
+      name: nams[i],
+      dataPoints: e,
+    });
+  });
+  options.data[0].xValueFormatString = "hh:mm:ss TT";
 
   let chart = $("#chartContainer").CanvasJSChart(options);
 
@@ -91,7 +89,7 @@ options.data[0].xValueFormatString  = "hh:mm:ss TT";
       },
     });
     count = count || 1;
-    
+
     for (let i = 0; i < count; i++) {
       time.setTime(time.getTime() + updateInterval);
       let key;
@@ -102,8 +100,8 @@ options.data[0].xValueFormatString  = "hh:mm:ss TT";
             x: time.getTime(),
             y: arr_data[i][key],
           });
-    }
-    });
+        }
+      });
     }
 
     for (let i = 0; i <= 4; i++) {
@@ -120,6 +118,6 @@ options.data[0].xValueFormatString  = "hh:mm:ss TT";
   setInterval(function () {
     updateChart();
   }, updateInterval);
-    $('#app').hide();
-    $('#chartContainer').show(4000);
- };
+  $("#app").hide();
+  $("#chartContainer").show(4000);
+}
