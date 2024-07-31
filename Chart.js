@@ -2,21 +2,9 @@ function chart_activation(get, _nams) {
   $("#chartContainer").hide();
   const nams = _nams.map(n => n.toUpperCase());
   const arr_data = [];
-
-  const dataPoints1 = [];
-  const dataPoints2 = [];
-  const dataPoints3 = [];
-  const dataPoints4 = [];
-  const dataPoints5 = [];
-
-  const arr_dataPoints = [
-    dataPoints1,
-    dataPoints2,
-    dataPoints3,
-    dataPoints4,
-    dataPoints5,
-  ];
-
+  
+  const arr_dataPoints = [[], [], [], [], []];
+  
   const options = {
     title: {
       text: "Coins Live Report",
